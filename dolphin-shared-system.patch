@@ -1,0 +1,36 @@
+diff --git a/Source/Core/Core/System.cpp b/Source/Core/Core/System.cpp
+index 12da7dc..1e4e3e7 100644
+--- a/Source/Core/Core/System.cpp
++++ b/Source/Core/Core/System.cpp
+@@ -112,6 +112,12 @@ System::System() : m_impl{std::make_unique<Impl>(*this)}
+ {
+ }
+ 
++System& System::GetInstance()
++{
++  static System instance;
++  return instance;
++}
++
+ System::~System() = default;
+ 
+ void System::Initialize()
+diff --git a/Source/Core/Core/System.h b/Source/Core/Core/System.h
+index 8524003..bb61619 100644
+--- a/Source/Core/Core/System.h
++++ b/Source/Core/Core/System.h
+@@ -134,11 +134,9 @@ public:
+   System& operator=(System&&) = delete;
+ 
+   // Intermediate instance accessor until global state is eliminated.
+-  static System& GetInstance()
+-  {
+-    static System instance;
+-    return instance;
+-  }
++  // Defined out of line in System.cpp so that every object file, including code compiled
++  // outside the core libraries, shares one instance.
++  static System& GetInstance();
+ 
+   void Initialize();
+ 
